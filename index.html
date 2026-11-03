@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earn Coins BD</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #101426;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: auto;
+      padding: 22px 16px 35px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #a895ff;
+    }
+
+    .profile {
+      background: #252d48;
+      padding: 9px 13px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .welcome {
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #aab2cc;
+      font-size: 14px;
+    }
+
+    .balance {
+      background: linear-gradient(135deg, #7059e8, #4033a6);
+      padding: 25px;
+      border-radius: 20px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 25px #0004;
+    }
+
+    .balance small {
+      color: #e0d9ff;
+      font-size: 14px;
+    }
+
+    .balance h1 {
+      font-size: 38px;
+      margin: 12px 0;
+    }
+
+    .balance p {
+      font-size: 12px;
+      color: #e0d9ff;
+    }
+
+    .section-title {
+      font-size: 19px;
+      margin: 25px 0 14px;
+    }
+
+    .offer {
+      background: #202943;
+      border: 1px solid #303b5a;
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 13px;
+    }
+
+    .offer h3 {
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .offer p {
+      font-size: 13px;
+      color: #aab2cc;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    button {
+      border: none;
+      background: #8872f5;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(.98);
+    }
+
+    .offer button {
+      width: 100%;
+    }
+
+    .notice {
+      background: #292a3e;
+      border-radius: 12px;
+      padding: 13px;
+      color: #c4c9dc;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+
+    .bottom {
+      display: flex;
+      justify-content: space-around;
+      background: #202943;
+      padding: 17px 8px;
+      border-radius: 15px;
+      margin-top: 25px;
+      color: #b9c0d6;
+      font-size: 13px;
+    }
+
+    .bottom span {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="header">
+      <div class="logo">🪙 Earn Coins BD</div>
+      <div class="profile" id="username">👤 Guest</div>
+    </header>
+
+    <section class="welcome">
+      <h2 id="welcome">Welcome! 👋</h2>
+      <p>Complete available offers and earn rewards.</p>
+    </section>
+
+    <section class="balance">
+      <small>YOUR COIN BALANCE</small>
+      <h1>🪙 0</h1>
+      <p>Your rewards will appear here.</p>
+    </section>
+
+    <h2 class="section-title">🎁 Earn Rewards</h2>
+
+    <div class="offer">
+      <h3>🎮 Complete Offers</h3>
+      <p>Discover available tasks, surveys and app offers.</p>
+      <button onclick="showMessage()">
+        Explore Offers
+      </button>
+    </div>
+
+    <div class="offer">
+      <h3>⭐ Daily Rewards</h3>
+      <p>Check back for available rewards and activities.</p>
+      <button onclick="showMessage()">
+        Coming Soon
+      </button>
+    </div>
+
+    <div class="notice">
+      ℹ️ This is the first demo version of Earn Coins BD.
+      The real offerwall, account balance and reward system
+      are not connected yet.
+    </div>
+
+    <nav class="bottom">
+      <span onclick="goHome()">🏠 Home</span>
+      <span onclick="showMessage()">🎁 Earn</span>
+      <span onclick="showProfile()">👤 Profile</span>
+    </nav>
+
+  </main>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+
+      const user = tg.initDataUnsafe?.user;
+
+      if (user) {
+        const name = user.first_name || "User";
+        document.getElementById("welcome").textContent =
+          "Welcome, " + name + "! 👋";
+
+        document.getElementById("username").textContent =
+          "👤 " + name;
+      }
+    }
+
+    function showMessage() {
+      const message =
+        "The GigaPub Offerwall is not connected yet. Please wait for setup.";
+
+      if (tg) {
+        tg.showAlert(message);
+      } else {
+        alert(message);
+      }
+    }
+
+    function goHome() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showProfile() {
+      showMessage();
+    }
+  </script>
+
+</body>
+</html>
