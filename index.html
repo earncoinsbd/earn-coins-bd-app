@@ -71,6 +71,30 @@
       font-size: 14px;
     }
 
+
+    .telegram-promo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      margin: 0 0 20px;
+      border: 1px solid #5547a8;
+      border-radius: 17px;
+      background: linear-gradient(120deg, #253b69, #4932a0);
+      box-shadow: 0 8px 22px #0003;
+    }
+    .telegram-promo-copy { min-width: 0; }
+    .telegram-promo h3 { font-size: 15px; margin-bottom: 6px; }
+    .telegram-promo p { color: #e0ddff; font-size: 12px; line-height: 1.45; }
+    .telegram-promo button {
+      flex: 0 0 auto;
+      padding: 11px 13px;
+      background: #ffffff;
+      color: #5142a8;
+      white-space: nowrap;
+    }
+
     .balance {
       background: linear-gradient(135deg, #7059e8, #4033a6);
       padding: 25px;
@@ -208,6 +232,14 @@
       <p>Complete available offers and earn rewards.</p>
     </section>
 
+    <section class="telegram-promo">
+      <div class="telegram-promo-copy">
+        <h3>✈️ Join Earn Coins BD on Telegram</h3>
+        <p>Get the latest app updates, announcements and reward news.</p>
+      </div>
+      <button id="telegram-join-button">Join Now</button>
+    </section>
+
     <section class="balance">
       <small>YOUR COIN BALANCE</small>
 <h1 id="coin-balance">🪙 0</h1>      <p>Your rewards will appear here.</p>
@@ -331,6 +363,15 @@ async function loadCoinBalance() {
 }
 
 loadCoinBalance();
+    document.getElementById('telegram-join-button').addEventListener('click', () => {
+      const telegramUrl = 'https://t.me/EarnCoinsBD_bot';
+      if (tg?.openTelegramLink) {
+        tg.openTelegramLink(telegramUrl);
+      } else {
+        window.open(telegramUrl, '_blank', 'noopener');
+      }
+    });
+
     function showMessage() {
       const message =
         "This feature is coming soon. Please check back later.";
