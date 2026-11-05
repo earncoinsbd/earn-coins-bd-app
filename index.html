@@ -172,8 +172,7 @@
 
     <section class="balance">
       <small>YOUR COIN BALANCE</small>
-      <h1>🪙 0</h1>
-      <p>Your rewards will appear here.</p>
+<h1 id="coin-balance">🪙 0</h1>      <p>Your rewards will appear here.</p>
     </section>
 
     <h2 class="section-title">🎁 Earn Rewards</h2>
@@ -226,7 +225,38 @@
           "👤 " + name;
       }
     }
+async function loadCoinBalance() {
+  const balanceEl = document.getElementById('coin-balance');
 
+  if (!tg || !tg.initData || !balanceEl) return;
+
+  try {
+    const response = await fetch(
+      'https://xdbkkkvsvqfiirjfcowx.supabase.co/functions/v1/get-balance',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'sb_publishable_C38YHgVoBLJaj8xz6LdB0w_ni5SBkos'
+        },
+        body: JSON.stringify({ initData: tg.initData })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || 'Balance loading failed');
+    }
+
+    balanceEl.textContent =
+      '🪙 ' + Number(result.coins).toLocaleString();
+  } catch (error) {
+    console.error('Balance error:', error);
+  }
+}
+
+loadCoinBalance();
     function showMessage() {
       const message =
         "The GigaPub Offerwall is not connected yet. Please wait for setup.";
