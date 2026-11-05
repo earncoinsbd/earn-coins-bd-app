@@ -152,7 +152,35 @@
 
     .bottom span {
       cursor: pointer;
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 10px;
     }
+    .bottom span.active {
+      color: #ffffff;
+      background: #5142a8;
+      font-weight: bold;
+    }
+    .page { display: none; }
+    .page.active { display: block; }
+    .profile-card {
+      background: #202943;
+      border: 1px solid #303b5a;
+      padding: 18px;
+      border-radius: 16px;
+      margin: 14px 0;
+    }
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #303b5a;
+      font-size: 14px;
+    }
+    .profile-row:last-child { border-bottom: 0; }
+    .muted { color: #aab2cc; }
   </style>
 </head>
 
@@ -165,6 +193,7 @@
       <div class="profile" id="username">👤 Guest</div>
     </header>
 
+    <div id="home-page" class="page active">
     <section class="welcome">
       <h2 id="welcome">Welcome! 👋</h2>
       <p>Complete available offers and earn rewards.</p>
@@ -199,10 +228,38 @@
       Rewards appear after successful verification.
     </div>
 
+    </div>
+
+    <section id="earn-page" class="page">
+      <h2 class="section-title">🎁 Earn Coins</h2>
+      <div class="offer">
+        <h3>🎮 Available Offers</h3>
+        <p>Open the GigaPub offerwall to see tasks, apps and surveys currently available for your account.</p>
+        <button id="earn-open-button">Explore Offers</button>
+      </div>
+      <div class="offer">
+        <h3>⭐ Daily Rewards</h3>
+        <p class="muted">Daily reward feature is not active yet. We will show it here when it is ready.</p>
+      </div>
+    </section>
+
+    <section id="profile-page" class="page">
+      <h2 class="section-title">👤 My Profile</h2>
+      <div class="profile-card">
+        <div style="font-size:42px;text-align:center;margin:8px 0 16px">👤</div>
+        <h3 id="profile-name" style="text-align:center">Guest</h3>
+        <p id="profile-username" class="muted" style="text-align:center;margin-top:6px">@not_set</p>
+        <div class="profile-row"><span class="muted">Telegram ID</span><strong id="profile-id">Not available</strong></div>
+        <div class="profile-row"><span class="muted">Coin Balance</span><strong id="profile-balance">🪙 0</strong></div>
+      </div>
+      <button id="refresh-balance-button" style="width:100%">Refresh Balance</button>
+      <p class="notice">Your account is linked through Telegram. Keep using the same Telegram account to view your rewards.</p>
+    </section>
+
     <nav class="bottom">
-      <span onclick="goHome()">🏠 Home</span>
-      <span onclick="showMessage()">🎁 Earn</span>
-      <span onclick="showProfile()">👤 Profile</span>
+      <span id="tab-home" class="active" onclick="switchTab('home')">🏠 Home</span>
+      <span id="tab-earn" onclick="switchTab('earn')">🎁 Earn</span>
+      <span id="tab-profile" onclick="switchTab('profile')">👤 Profile</span>
     </nav>
 
   </main>
@@ -223,6 +280,12 @@
 
         document.getElementById("username").textContent =
           "👤 " + name;
+        document.getElementById("profile-name").textContent =
+          [user.first_name, user.last_name].filter(Boolean).join(" ") || name;
+        document.getElementById("profile-username").textContent =
+          user.username ? "@" + user.username : "Telegram account";
+        document.getElementById("profile-id").textContent =
+          String(user.id);
       }
     }
 async function loadCoinBalance() {
@@ -251,6 +314,8 @@ async function loadCoinBalance() {
 
     balanceEl.textContent =
       '🪙 ' + Number(result.coins).toLocaleString();
+    const profileBalance = document.getElementById('profile-balance');
+    if (profileBalance) profileBalance.textContent = balanceEl.textContent;
   } catch (error) {
     console.error('Balance error:', error);
   }
@@ -268,9 +333,33 @@ loadCoinBalance();
       }
     }
 
-    function goHome() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+    function switchTab(tab) {
+      ['home', 'earn', 'profile'].forEach((name) => {
+        document.getElementById(name + '-page').classList.toggle('active', name === tab);
+        document.getElementById('tab-' + name).classList.toggle('active', name === tab);
+      });
+      if (tab === 'profile') {
+        const user = tg?.initDataUnsafe?.user;
+        if (user) {
+          document.getElementById('profile-name').textContent =
+            [user.first_name, user.last_name].filter(Boolean).join(' ') || 'User';
+          document.getElementById('profile-username').textContent =
+            user.username ? '@' + user.username : 'Telegram account';
+          document.getElementById('profile-id').textContent = String(user.id);
+        }
+        loadCoinBalance();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('earn-open-button').addEventListener('click', () => {
+      if (window.gigaOfferWallSDK) {
+        window.gigaOfferWallSDK.open();
+      } else {
+        alert('Offerwall is loading. Please try again.');
+      }
+    });
+    document.getElementById('refresh-balance-button').addEventListener('click', loadCoinBalance);
     
    </script>
   
@@ -305,6 +394,7 @@ loadCoinBalance();
             sdk.confirmReward(data.rewardId, result.confirmationHash);
 
             alert('Congratulations! Your reward has been credited.');
+            setTimeout(loadCoinBalance, 1000);
           } catch (error) {
             console.error('Reward error:', error);
             alert('Reward verification failed. Please try again.');
@@ -326,7 +416,7 @@ loadCoinBalance();
 </script>
   <script>
         function showProfile() {
-          showMessage();
+          switchTab('profile');
        }
     </script>
 
