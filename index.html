@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UT
+    F-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Earn Coins BD</title>
 
@@ -214,7 +215,8 @@
     }
     .profile-row:last-child { border-bottom: 0; }
     .muted { color: #aab2cc; }
-  </style>
+ </style>
+  <script src='//libtl.com/sdk.js' data-zone='12200841' data-sdk='show_12200841'></script>
 </head>
 
 <body>
@@ -277,7 +279,14 @@
         <h3>🎮 Available Offers</h3>
         <p>Open the GigaPub offerwall to see tasks, apps and surveys currently available for your account.</p>
         <button id="earn-open-button">Explore Offers</button>
-      </div>
+     </div>
+<div class="offer">
+  <h3>💰 Monetag Rewards</h3>
+  <p>Watch an ad and earn 10 coins.</p>
+  <button id="monetag-reward-button">
+    Watch Ad & Earn 10 Coins
+  </button>
+</div>
       <div class="offer">
         <h3>⭐ Daily Rewards</h3>
         <p class="muted">Daily reward feature is not active yet. We will show it here when it is ready.</p>
@@ -469,6 +478,39 @@ loadCoinBalance();
           switchTab('profile');
        }
     </script>
+<script>
+document.getElementById('monetag-reward-button').addEventListener('click', async function () {
+  const button = this;
 
+  if (typeof window.show_12200841 !== 'function') {
+    alert('Monetag is loading. Please try again.');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Loading Ad...';
+
+  const ymid = 'ad_' + crypto.randomUUID();
+
+  try {
+    const result = await window.show_12200841({
+      ymid: ymid,
+      requestVar: 'watch_ad'
+    });
+
+    if (result?.reward_event_type === 'valued') {
+      alert('Ad completed! Your reward is being verified.');
+    } else {
+      alert('Ad completed, but no paid reward was confirmed.');
+    }
+  } catch (error) {
+    console.error('Monetag error:', error);
+    alert('Ad failed or unavailable. Please try again.');
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Watch Ad & Earn 10 Coins';
+  }
+});
+</script>
 </body>
 </html>
